@@ -1,0 +1,27 @@
+{
+  "name": "AutoFlow_Workflow_C_InvoiceProcessing",
+  "projectId": "c0426842-51df-61ff-de03-c12306d13233",
+  "description": "AutoFlow AI Robot: Invoice entry into finance/ERP ledger with digital approval token validation.",
+  "main": "InvoiceProcessingAutomation.xaml",
+  "dependencies": {
+    "UiPath.UIAutomation.Activities": "[24.10.1]",
+    "UiPath.System.Activities": "[24.10.3]",
+    "UiPath.WebAPI.Activities": "[1.20.1]"
+  },
+  "schemaVersion": "4.0",
+  "studioVersion": "24.10.0.0",
+  "projectVersion": "1.0.0",
+  "arguments": {
+    "input": [
+      { "name": "in_InvoiceNumber", "type": "System.String" },
+      { "name": "in_VendorName", "type": "System.String" },
+      { "name": "in_TotalAmount", "type": "System.Double" },
+      { "name": "in_ApprovalToken", "type": "System.String" },
+      { "name": "in_ApprovedBy", "type": "System.String" }
+    ],
+    "output": [
+      { "name": "out_VoucherNumber", "type": "System.String" },
+      { "name": "out_Status", "type": "System.String" }
+    ]
+  }
+}

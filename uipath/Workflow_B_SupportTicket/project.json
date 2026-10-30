@@ -1,0 +1,27 @@
+{
+  "name": "AutoFlow_Workflow_B_SupportTicket",
+  "projectId": "b9315731-40ce-50ef-cd92-b01295c02122",
+  "description": "AutoFlow AI Robot: Automated ITSM support ticket creation.",
+  "main": "SupportTicketAutomation.xaml",
+  "dependencies": {
+    "UiPath.UIAutomation.Activities": "[24.10.1]",
+    "UiPath.System.Activities": "[24.10.3]",
+    "UiPath.WebAPI.Activities": "[1.20.1]"
+  },
+  "schemaVersion": "4.0",
+  "studioVersion": "24.10.0.0",
+  "projectVersion": "1.0.0",
+  "arguments": {
+    "input": [
+      { "name": "in_TicketTitle", "type": "System.String" },
+      { "name": "in_Category", "type": "System.String" },
+      { "name": "in_Priority", "type": "System.String" },
+      { "name": "in_Requester", "type": "System.String" },
+      { "name": "in_Description", "type": "System.String" }
+    ],
+    "output": [
+      { "name": "out_TicketId", "type": "System.String" },
+      { "name": "out_Status", "type": "System.String" }
+    ]
+  }
+}

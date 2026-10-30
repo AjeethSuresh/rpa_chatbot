@@ -1,0 +1,6 @@
+{
+  "name": "AutoFlow AI",
+  "description": "Enterprise LLM, RAG & RPA-powered intelligent business process automation platform integrating AI decision support with UiPath robotic execution.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

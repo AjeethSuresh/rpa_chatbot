@@ -1,0 +1,951 @@
+# MASTER PROJECT DEVELOPMENT PROMPT
+## AutoFlow AI — Intelligent Business Process Automation using LLM, RAG & RPA
+
+### 1. Your Role
+
+Act as a Senior AI Engineer, RPA Architect, Full-Stack Developer, and Software Architect.
+
+I want you to independently design and develop a complete, professional, production-style project called:
+
+**AutoFlow AI — LLM, RAG & RPA-Powered Intelligent Business Process Automation Platform**
+
+This is a completely new and independent project. Do not modify, reuse the source code of, or introduce dependencies on my existing projects such as INTERNIXA or my previous AI chatbot applications.
+
+You must develop this project from scratch, using my existing knowledge of Python, FastAPI, React, LLMs, RAG, embeddings, Pinecone, Groq, Gemini, and MongoDB as the technical foundation.
+
+Do not create just a basic chatbot or a simple automation demonstration. Build an end-to-end intelligent business automation platform that integrates AI decision support with actual RPA execution.
+
+---
+
+# 2. Project Vision
+
+The primary objective is to combine three technologies:
+
+1. **LLM (Large Language Model):** Understands emails, documents, user requests, extracts information, classifies requests, and generates responses.
+2. **RAG (Retrieval-Augmented Generation):** Retrieves relevant information from company documents and knowledge bases before generating answers.
+3. **RPA (Robotic Process Automation):** Executes repetitive business tasks automatically using UiPath.
+
+The platform should receive business requests, understand them using AI, retrieve relevant company information, prepare an appropriate response or action, and execute approved tasks through RPA.
+
+### Example business scenario
+
+A company receives hundreds of emails every day.
+
+Employees manually:
+- Read incoming emails.
+- Identify the type of request.
+- Search company policies.
+- Extract information from attachments.
+- Create support tickets.
+- Update business records.
+- Draft responses.
+- Forward requests to the correct department.
+
+AutoFlow AI should automate this workflow.
+
+**Core principle:**
+
+LLM = Understand and reason about the request.
+
+RAG = Retrieve relevant company knowledge.
+
+FastAPI = Connect and coordinate the services.
+
+RPA = Execute the actual business tasks.
+
+Human approval = Control sensitive or high-impact actions.
+
+---
+
+# 3. Main Project Features
+
+Develop the following modules.
+
+## Module 1: AI-Powered Email Processing
+
+Create an email processing system that can receive incoming business emails.
+
+Requirements:
+
+- Connect to a test email account through a supported email API or connector.
+- Support uploading `.eml` files for local testing.
+- Extract sender, subject, body, timestamp, and attachment information.
+- Process incoming email content.
+- Identify the request category.
+- Extract important information.
+- Identify urgency and priority.
+- Detect missing information.
+- Generate structured JSON output.
+
+Example input:
+
+"Hello, I need information about the company's work-from-home policy. Can you tell me how many days are allowed?"
+
+Expected structured output:
+
+{
+  "request_id": "REQ-1001",
+  "category": "HR_POLICY",
+  "subcategory": "WORK_FROM_HOME",
+  "priority": "NORMAL",
+  "requires_rag": true,
+  "requires_human_approval": false,
+  "status": "CLASSIFIED"
+}
+
+Use Pydantic models to validate every structured response. Never trust raw LLM output directly.
+
+Supported initial categories:
+
+- HR and employee policies
+- IT support
+- Invoice processing
+- Reimbursement requests
+- General business enquiries
+- Other / unknown
+
+## Module 2: LLM Integration
+
+Integrate two LLM providers.
+
+**Primary provider:**
+- Groq API.
+- Use a currently supported model available through the API.
+
+**Secondary provider:**
+- Google Gemini API.
+- Use a currently supported Gemini model.
+
+Requirements:
+
+- Create a modular LLM service.
+- Support provider selection through environment variables.
+- Support fallback to the secondary provider when the primary provider fails, subject to retry limits.
+- Implement prompt templates.
+- Implement structured JSON output.
+- Handle rate limits and API errors.
+- Add configurable temperature and token limits.
+- Log provider, latency, and request status without exposing API keys or confidential content.
+
+The LLM must perform:
+
+1. Email classification.
+2. Information extraction.
+3. Request summarization.
+4. Intent detection.
+5. Response generation.
+6. Action recommendation.
+7. Missing-information detection.
+
+Do not allow the LLM to execute sensitive actions independently.
+
+## Module 3: RAG-Based Company Knowledge Base
+
+Develop a document-based RAG pipeline.
+
+Supported file formats:
+
+- PDF
+- DOCX
+- TXT
+- CSV
+
+Users should be able to upload company documents through the dashboard.
+
+Example documents:
+
+- HR policy handbook.
+- Work-from-home policy.
+- Leave policy.
+- Employee reimbursement policy.
+- IT troubleshooting documentation.
+- Invoice-processing guidelines.
+- Customer support SOPs.
+
+### RAG processing pipeline
+
+1. Upload documents.
+2. Validate file type and size.
+3. Extract text.
+4. Clean the extracted content.
+5. Split text into meaningful chunks.
+6. Generate embeddings.
+7. Store vectors in Pinecone.
+8. Save document metadata in MongoDB.
+9. Perform semantic similarity search when a question arrives.
+10. Retrieve the most relevant chunks.
+11. Pass retrieved context to the LLM.
+12. Generate an answer grounded in the retrieved information.
+
+### Technical requirements
+
+- Use Gemini embeddings through a supported embedding model.
+- Use Pinecone as the vector database.
+- Implement configurable chunk size and overlap.
+- Store source document name, page number where available, chunk ID, and metadata.
+- Return document references with answers.
+- Support document deletion and re-indexing.
+- Avoid duplicate indexing.
+- Handle documents with no extractable text.
+- Implement retrieval score thresholds.
+- Do not generate policy answers when relevant evidence is missing.
+
+Example:
+
+Employee question:
+"What is the company's work-from-home policy?"
+
+RAG retrieves the relevant policy document and sends the retrieved passages to the LLM.
+
+Expected response:
+
+{
+  "answer": "According to the retrieved company policy, employees can work remotely under the specified conditions...",
+  "sources": [
+    {
+      "document": "HR_Policy.pdf",
+      "page": 12
+    }
+  ],
+  "confidence": "SUPPORTED",
+  "requires_human_review": false
+}
+
+The response must reflect the actual uploaded document. Do not invent company policies or sample facts.
+
+## Module 4: UiPath RPA Integration
+
+This is one of the most important modules.
+
+Use **UiPath Studio** to implement actual robotic process automation.
+
+Do not simulate RPA by simply printing messages or changing database statuses.
+
+Create a proper UiPath integration architecture.
+
+### RPA workflows to implement
+
+**Workflow A: Email Processing Automation**
+
+1. Receive an email or request from the backend.
+2. Retrieve the classified request.
+3. Read the AI-generated response.
+4. Prepare an email draft.
+5. Create a ticket or update a designated test application.
+6. Route the request for approval when necessary.
+7. Record the execution result.
+
+**Workflow B: Support Ticket Automation**
+
+1. Receive structured request information from FastAPI.
+2. Open a designated demo ticket-management application.
+3. Create a support ticket.
+4. Populate the title, description, category, priority, and requester.
+5. Save the ticket.
+6. Capture the ticket reference.
+7. Return the execution result to FastAPI.
+
+**Workflow C: Invoice Processing Automation**
+
+1. Receive a sample invoice.
+2. Extract invoice number, vendor name, invoice date, and total amount.
+3. Validate the extracted fields.
+4. Compare against sample invoice-processing rules.
+5. Flag discrepancies and missing information.
+6. Request human approval.
+7. Only after approval, use UiPath to enter the validated information into a designated demo finance application.
+8. Record the transaction reference and outcome.
+
+### Integration architecture
+
+FastAPI must expose endpoints that UiPath can consume.
+
+Example:
+
+POST /api/v1/rpa/execute
+
+POST /api/v1/rpa/callback
+
+GET /api/v1/rpa/jobs/{job_id}
+
+GET /api/v1/rpa/jobs
+
+POST /api/v1/rpa/approve/{job_id}
+
+The actual integration method must be documented and implemented using a supported mechanism.
+
+Preferred approach:
+- UiPath Orchestrator APIs, where available.
+- UiPath-supported HTTP/API activities.
+- A secure webhook or polling mechanism for communication.
+- A local development mode for testing.
+
+Do not assume UiPath Orchestrator or an unattended robot is available without checking the actual account and licensing requirements.
+
+Create a separate `/uipath` folder containing:
+- Workflow documentation.
+- Workflow diagrams.
+- Integration specifications.
+- Required variables and arguments.
+- API request and response examples.
+- UiPath implementation instructions.
+- Exportable workflow artifacts if supported by the development environment.
+
+The backend must clearly distinguish between:
+- RPA_NOT_CONFIGURED
+- RPA_PENDING
+- RPA_RUNNING
+- RPA_COMPLETED
+- RPA_FAILED
+- AWAITING_APPROVAL
+
+Never mark an RPA task as completed unless actual execution has been confirmed.
+
+## Module 5: Human-in-the-Loop Approval
+
+Build an approval system.
+
+Some actions must not execute automatically.
+
+Examples:
+
+- Sending sensitive emails.
+- Updating financial information.
+- Processing reimbursement requests.
+- Changing important employee records.
+- Handling uncertain or unsupported AI responses.
+
+Requirements:
+
+- Display pending approval requests.
+- Show the original request.
+- Show extracted data.
+- Show the AI recommendation.
+- Show supporting document references.
+- Allow authorized users to approve or reject.
+- Record who approved or rejected.
+- Record timestamp and reason.
+- Trigger RPA execution only after required approval.
+- Prevent duplicate execution.
+
+Implement role-based authorization.
+
+Roles:
+- Admin
+- Reviewer
+- Operator
+
+## Module 6: React Admin Dashboard
+
+Build a modern, professional enterprise dashboard.
+
+Use:
+
+- React 19
+- Vite
+- TypeScript
+- Tailwind CSS
+- React Router
+- Lucide React
+- Recharts
+- Axios or a suitable API client
+
+The design should be clean, modern, responsive, and suitable for an enterprise AI automation product.
+
+Avoid generic template-like designs.
+
+### Dashboard pages
+
+**1. Overview Dashboard**
+
+Display:
+- Total requests received.
+- Successfully processed requests.
+- Pending approvals.
+- Failed automation jobs.
+- Active workflows.
+- Average processing time.
+- Request category distribution.
+- Recent automation activity.
+
+**2. Email Processing**
+
+Display:
+- Sender.
+- Email subject.
+- Received date.
+- Detected category.
+- Priority.
+- AI processing status.
+- RAG status.
+- RPA status.
+
+Allow users to open a request and inspect its complete processing history.
+
+**3. Knowledge Base**
+
+Features:
+- Upload documents.
+- View indexed documents.
+- Search documents.
+- Display document metadata.
+- Display indexing status.
+- Delete documents.
+- Re-index documents.
+- View processing errors.
+
+**4. AI Processing Center**
+
+Display:
+- Original user request.
+- LLM classification.
+- Extracted fields.
+- Retrieved RAG context.
+- Generated response.
+- Source references.
+- Validation result.
+- AI processing duration.
+
+**5. RPA Automation Center**
+
+Display:
+- Workflow name.
+- Job ID.
+- Request ID.
+- Execution status.
+- Start time.
+- Completion time.
+- Error details.
+- Execution logs.
+
+Provide controls to trigger permitted workflows and inspect execution results.
+
+**6. Approval Center**
+
+Display:
+- Pending requests.
+- AI recommendation.
+- Supporting evidence.
+- Extracted information.
+- Approve and reject actions.
+- Approval history.
+
+**7. Analytics**
+
+Create charts for:
+- Requests by category.
+- Daily processing volume.
+- Successful versus failed workflows.
+- Approval versus rejection counts.
+- Average processing time.
+- Automation success rate.
+
+Use actual database records, not hardcoded chart values.
+
+**8. Settings**
+
+Provide:
+- LLM provider configuration.
+- RAG configuration.
+- Pinecone connection status.
+- UiPath connection status.
+- API configuration.
+- User management.
+- System health.
+
+Never expose API keys in frontend responses.
+
+---
+
+# 4. Backend Architecture
+
+Use Python and FastAPI.
+
+Suggested folder structure:
+
+backend/
+  app/
+    main.py
+
+    api/
+      v1/
+        auth.py
+        emails.py
+        documents.py
+        ai.py
+        rag.py
+        rpa.py
+        approvals.py
+        analytics.py
+        health.py
+
+    core/
+      config.py
+      security.py
+      logging.py
+      exceptions.py
+
+    models/
+      user.py
+      email.py
+      document.py
+      request.py
+      approval.py
+      rpa_job.py
+
+    schemas/
+      email_schema.py
+      ai_schema.py
+      rag_schema.py
+      rpa_schema.py
+      approval_schema.py
+
+    services/
+      email_service.py
+      document_service.py
+      llm_service.py
+      groq_service.py
+      gemini_service.py
+      embedding_service.py
+      rag_service.py
+      pinecone_service.py
+      classification_service.py
+      invoice_service.py
+      approval_service.py
+      automation_service.py
+
+    integrations/
+      uipath/
+        client.py
+        orchestrator.py
+        webhook.py
+
+    repositories/
+      user_repository.py
+      request_repository.py
+      document_repository.py
+      rpa_repository.py
+
+    workers/
+      task_worker.py
+
+    utils/
+      file_parser.py
+      text_splitter.py
+      validators.py
+
+  tests/
+  requirements.txt
+  .env.example
+  Dockerfile
+  README.md
+
+You may improve this structure where necessary, but maintain separation of concerns.
+
+Use asynchronous processing for long-running tasks where appropriate.
+
+Use a background task or job queue for operations such as document indexing and RPA execution. Do not block HTTP requests while long-running workflows execute.
+
+---
+
+# 5. Database Design
+
+Use MongoDB.
+
+Create collections for:
+
+1. users
+2. requests
+3. emails
+4. documents
+5. document_chunks_metadata
+6. approvals
+7. rpa_jobs
+8. execution_logs
+9. system_settings
+
+Important:
+
+- Use unique IDs.
+- Add timestamps.
+- Define indexes.
+- Track workflow state.
+- Maintain request-to-job relationships.
+- Store execution history.
+- Prevent duplicate task execution.
+- Avoid storing unnecessary sensitive data.
+
+Pinecone should store vectors and retrieval metadata, while MongoDB should store application-level records.
+
+---
+
+# 6. Security Requirements
+
+Implement:
+
+- JWT authentication.
+- Password hashing.
+- Role-based access control.
+- Input validation.
+- File upload validation.
+- File size restrictions.
+- API rate limiting.
+- Secure environment variable handling.
+- CORS restrictions.
+- Secure API-to-RPA communication.
+- Audit logs.
+- Error handling.
+- Protection against prompt injection in uploaded documents and emails.
+
+Never expose:
+- API keys.
+- Passwords.
+- JWT secrets.
+- Database credentials.
+- Sensitive employee information.
+
+The LLM must not be allowed to override application permissions or bypass approval rules.
+
+Use deterministic backend authorization checks for every action.
+
+---
+
+# 7. API Documentation
+
+Create REST APIs with meaningful endpoint names.
+
+Required endpoint groups:
+
+Authentication:
+- POST /api/v1/auth/register
+- POST /api/v1/auth/login
+- GET /api/v1/auth/me
+
+Email:
+- POST /api/v1/emails/upload
+- GET /api/v1/emails
+- GET /api/v1/emails/{id}
+- POST /api/v1/emails/{id}/process
+
+Documents:
+- POST /api/v1/documents/upload
+- GET /api/v1/documents
+- DELETE /api/v1/documents/{id}
+- POST /api/v1/documents/{id}/reindex
+
+AI and RAG:
+- POST /api/v1/ai/classify
+- POST /api/v1/ai/extract
+- POST /api/v1/rag/query
+
+RPA:
+- POST /api/v1/rpa/execute
+- GET /api/v1/rpa/jobs
+- GET /api/v1/rpa/jobs/{job_id}
+- POST /api/v1/rpa/callback
+
+Approvals:
+- GET /api/v1/approvals/pending
+- POST /api/v1/approvals/{id}/approve
+- POST /api/v1/approvals/{id}/reject
+
+Analytics:
+- GET /api/v1/analytics/overview
+- GET /api/v1/analytics/workflows
+- GET /api/v1/analytics/performance
+
+Provide Swagger documentation through FastAPI.
+
+---
+
+# 8. Workflow Orchestration
+
+Implement the following overall process:
+
+INCOMING EMAIL
+      |
+      v
+EMAIL EXTRACTION
+      |
+      v
+LLM CLASSIFICATION
+      |
+      v
+STRUCTURED DATA VALIDATION
+      |
+      v
+DOES REQUEST REQUIRE RAG?
+      |
+      +---- YES ----> PINECONE RETRIEVAL
+      |                     |
+      |                     v
+      |                LLM GENERATION
+      |                     |
+      +---------------------+
+                            |
+                            v
+                    ACTION VALIDATION
+                            |
+                            v
+                    APPROVAL REQUIRED?
+                       /         
+                     YES          NO
+                      |            |
+                      v            v
+                  HUMAN         RPA EXECUTION
+                  REVIEW            |
+                      |             |
+                      v             |
+                  APPROVED?         |
+                   /    \           |
+                 YES    NO          |
+                  |      |          |
+                  v      v          |
+                 RPA   REJECTED     |
+                  |                 |
+                  +--------+--------+
+                           |
+                           v
+                    EXECUTION RESULT
+                           |
+                           v
+                    DATABASE LOGGING
+                           |
+                           v
+                    DASHBOARD UPDATE
+
+Use explicit workflow states and transitions. Prevent invalid transitions and duplicate execution.
+
+---
+
+# 9. Development Standards
+
+Follow these instructions throughout development.
+
+1. Write clean, modular, maintainable code.
+2. Use type hints in Python.
+3. Use Pydantic for validation.
+4. Use reusable React components.
+5. Separate API, business logic, and database layers.
+6. Avoid unnecessary dependencies.
+7. Use environment variables for configuration.
+8. Add meaningful exception handling.
+9. Add structured logging.
+10. Write unit tests and integration tests.
+11. Use mock services only for testing.
+12. Do not hardcode API credentials.
+13. Do not use fake analytics or fake execution results.
+14. Do not claim an integration works until it has been tested.
+15. Do not leave important buttons non-functional.
+16. Do not create placeholder pages and call the project complete.
+17. Document every external service dependency.
+18. Maintain a clear README with setup instructions.
+
+Use a consistent design system across the frontend.
+
+The UI should have:
+- Professional typography.
+- Consistent spacing.
+- Responsive layout.
+- Sidebar navigation.
+- Status indicators.
+- Search and filtering.
+- Loading states.
+- Empty states.
+- Error messages.
+- Confirmation dialogs.
+
+---
+
+# 10. Testing and Evaluation
+
+Create tests for:
+
+LLM:
+- Correct classification.
+- Invalid JSON handling.
+- Provider failures.
+- Fallback behavior.
+
+RAG:
+- Document extraction.
+- Chunking.
+- Embedding generation.
+- Retrieval relevance.
+- Source attribution.
+- Unsupported questions.
+
+RPA:
+- Successful job execution.
+- Failed job handling.
+- Duplicate execution prevention.
+- Callback handling.
+- Approval enforcement.
+
+Security:
+- Invalid JWT.
+- Unauthorized actions.
+- Role restrictions.
+- Invalid file uploads.
+
+End-to-end:
+- Upload a sample policy document.
+- Index it in Pinecone.
+- Submit a test email.
+- Classify the request.
+- Retrieve the relevant policy.
+- Generate a response.
+- Send a structured job to UiPath.
+- Execute a demo ticket-creation workflow.
+- Receive the callback.
+- Display the completed execution in the dashboard.
+
+Use mock RPA execution for automated CI tests, but separately demonstrate at least one actual UiPath workflow in the local development environment.
+
+Create an evaluation report containing measured results. Do not invent accuracy percentages or performance improvements.
+
+---
+
+# 11. Deployment and Documentation
+
+Prepare the project for local development first.
+
+Provide:
+
+- Backend setup instructions.
+- Frontend setup instructions.
+- MongoDB configuration.
+- Pinecone configuration.
+- Groq API configuration.
+- Gemini API configuration.
+- UiPath integration setup.
+- Environment variable examples.
+- Sample business documents.
+- Sample email requests.
+- API documentation.
+- Architecture diagram.
+- Database schema diagram.
+- RPA workflow diagram.
+- End-to-end testing guide.
+
+Use Docker Compose where practical for local services.
+
+Create a comprehensive README.md.
+
+Do not commit `.env` files or credentials.
+
+---
+
+# 12. Project Development Phases
+
+Follow this order.
+
+**Phase 1 — Architecture and Planning**
+- Analyze the requirements.
+- Define system architecture.
+- Define the database schema.
+- Define API contracts.
+- Define the RPA integration strategy.
+- Create development milestones.
+
+**Phase 2 — Backend Development**
+- Implement FastAPI.
+- Implement MongoDB.
+- Implement authentication.
+- Implement LLM services.
+- Implement document processing.
+- Implement RAG.
+- Implement workflow orchestration.
+
+**Phase 3 — RPA Development**
+- Set up UiPath Studio.
+- Build email processing workflows.
+- Build ticket creation workflows.
+- Build approval-based execution.
+- Connect UiPath with FastAPI.
+- Implement callbacks and execution tracking.
+
+**Phase 4 — Frontend Development**
+- Build dashboard.
+- Build email processing pages.
+- Build knowledge base.
+- Build AI processing center.
+- Build RPA automation center.
+- Build approval center.
+- Build analytics.
+
+**Phase 5 — Integration**
+- Connect frontend and backend.
+- Connect backend and Pinecone.
+- Connect backend and LLM providers.
+- Connect backend and UiPath.
+- Test complete workflows.
+
+**Phase 6 — Quality and Deployment**
+- Perform end-to-end testing.
+- Fix integration errors.
+- Improve performance.
+- Check security.
+- Prepare documentation.
+- Prepare the final demonstration.
+
+---
+
+# 13. Important Instructions for the AI Coding Agent
+
+I do not want you to generate the entire project in one response and leave incomplete files.
+
+Work systematically.
+
+**First, inspect the development environment and create the project architecture.**
+
+Then:
+
+1. Explain the architecture and technology choices.
+2. Show the complete folder structure.
+3. Identify the required external accounts, credentials, and software.
+4. Identify any licensing or availability limitations related to UiPath.
+5. Create a development checklist.
+6. Start implementing Phase 1 and Phase 2.
+7. Run the relevant tests.
+8. Explain how to start the application.
+9. Continue with the next phase only after the current phase is stable.
+
+When credentials are unavailable, create a clear configuration interface and explain how to obtain them. Never invent API responses or pretend that external services are connected.
+
+If a feature cannot be completed in the current environment, explain exactly what is missing and provide the integration code or implementation instructions.
+
+Make reasonable technical decisions independently. Ask me questions only when an important decision cannot be made safely without my input.
+
+**Do not stop after producing an architecture document. The objective is to build the actual working application.**
+
+---
+
+# 14. Final Expected Deliverable
+
+At the end, I expect a complete working project containing:
+
+- A professional React frontend.
+- A FastAPI backend.
+- Groq and Gemini LLM integration.
+- A functional RAG pipeline.
+- Pinecone vector database integration.
+- MongoDB application database.
+- Actual UiPath automation workflows.
+- Email processing.
+- Document processing.
+- Support ticket automation.
+- Invoice processing with approval.
+- Human-in-the-loop controls.
+- Analytics dashboard.
+- Authentication and authorization.
+- Testing and documentation.
+- A working end-to-end demonstration.
+
+The final project must demonstrate a genuine combination of:
+
+**Artificial Intelligence + Retrieval-Augmented Generation + Robotic Process Automation + Full-Stack Development.**
+
+Build this as a portfolio-quality engineering project suitable for demonstrating my skills to recruiters hiring for AI Engineer, LLM Engineer, RAG Engineer, Python Developer, and Intelligent Automation Engineer positions.
+
+Start with Phase 1: Architecture and Planning.

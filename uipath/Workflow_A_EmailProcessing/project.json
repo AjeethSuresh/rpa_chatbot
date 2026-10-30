@@ -1,0 +1,44 @@
+{
+  "name": "AutoFlow_Workflow_A_EmailProcessing",
+  "projectId": "a8204620-39bd-49ce-bc81-a90184b91011",
+  "description": "AutoFlow AI Robot: Email ingestion, AI response retrieval, and auto-draft preparation.",
+  "main": "EmailProcessing.xaml",
+  "dependencies": {
+    "UiPath.Mail.Activities": "[1.23.11]",
+    "UiPath.System.Activities": "[24.10.3]",
+    "UiPath.WebAPI.Activities": "[1.20.1]"
+  },
+  "webServices": [],
+  "entitiesStores": [],
+  "schemaVersion": "4.0",
+  "studioVersion": "24.10.0.0",
+  "projectVersion": "1.0.0",
+  "runtimeOptions": {
+    "autoDispose": false,
+    "netFrameworkSetupNotification": false
+  },
+  "designOptions": {
+    "projectProfile": "Developement",
+    "outputType": "Process",
+    "libraryOptions": {
+      "includeOriginalXaml": false,
+      "privateWorkflows": []
+    },
+    "processOptions": {
+      "ignoredFiles": []
+    },
+    "fileInfoCollection": [],
+    "modernBehavior": true
+  },
+  "arguments": {
+    "input": [
+      { "name": "in_RequestId", "type": "System.String" },
+      { "name": "in_EmailSender", "type": "System.String" },
+      { "name": "in_AiAnswer", "type": "System.String" }
+    ],
+    "output": [
+      { "name": "out_DraftId", "type": "System.String" },
+      { "name": "out_Status", "type": "System.String" }
+    ]
+  }
+}
